@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Day 2 - Recursion</title>
+</head>
+<body>
+	<p>Welcome to recursion.html! You have 5 options:</p>
+	<ol>
+		<li>isEven(number) to find if a number is even or odd.</li>
+		<li>doubleArray(array) to double each element in the array.</li>
+		<li>reverse(string) to reverse the string.</li>
+		<li>triangle(nth) to find the nth triangular number.</li>
+		<li>separate(string, separator) to separate the string based on a separator.</li>
+	</ol>
+
+</body>
+
+<script>
+	// O(n/2) -> O(n)
+	const isEven = (number) => {
+		if (number === 0) {
+			return true;
+		} else if (number === 1) {
+			return false;
+		} else {
+			return isEven(number - 2);
+		}
+	}
+
+	// O(n^2)
+	const doubleArray = (array) => {
+		// index = index || 0;
+		// if (index < array.length) {	
+		// 	array[index] = array[index]*2;
+		// 	return doubleArray(array, index+1);
+		// }
+		// return array;
+		if (array.length === 0) {
+			return [];
+		}
+		return doubleArray(array.slice(0, array.length-1)).concat(array[array.length -1] * 2);
+	}
+
+	// O(n^2)
+	const reverse = (string, newString) => {
+		newString = newString || "";
+		if (string.length === 0) {
+			return newString;
+		}
+		return reverse(string.slice(1), string[0] + newString);
+	}
+
+	// O(n)
+	const triangle = (nth) => {
+		if (nth < 2) {
+			return nth;
+		}
+		return nth + triangle(nth - 1);
+	}
+
+	// O(n^2)
+	const separate = (string, separator) => {
+		let index = string.indexOf(separator);
+		if (index === -1) {
+			return [string];
+		}
+		console.log(string);
+		return [string.slice(0, index)].concat(separate(string.slice(index + 1), separator));
+	}
+
+	// O(stupid)
+	// Calculates the nth triangle number
+	// This one's a challenge! :)
+	var triangleNumbers = function(n) {
+	    if (n == 0 || n == 1) {
+	        return n;
+	    }
+	    return triangleNumbers(n - 1) + triangleNumbers(n - 1) - triangleNumbers(n - 2) + 1;
+	};
+
+	// O(1)
+	var triangleNum = (n) => {
+		return (n * (n + 1))/2
+	}
+</script>
+
+</html>

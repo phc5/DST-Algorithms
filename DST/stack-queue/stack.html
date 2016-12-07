@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Stack</title>
+</head>
+<body>
+  <h1>This is an implementation of a stack.</h1>
+</body>
+<script>
+  function Stack() {
+    this.dataStore = [];
+    this.top = 0;
+    this.push = push;
+    this.pop = pop;
+    this.peek = peek;
+    this.length = length;
+    this.display = display;
+  }
+
+  // O(1)
+  function push(element) {
+    this.dataStore[this.top++] = element;
+  }
+
+  // O(n)
+  function peek() {
+    return this.dataStore[this.top-1];
+  }
+
+  // O(1)
+  function pop() {
+    return this.dataStore[--this.top];
+  }
+
+  // O(n)
+  function display() {
+    console.log("bottom [" + this.dataStore + "] top");
+  };
+
+  // O(1)
+  function length() {
+    return this.top;
+  }
+
+  var s = new Stack();
+  // s.push("Joe");
+  // s.push("Tauhida");
+  // s.push(5);
+  // s.display();
+  // console.log("length: " + s.length());
+  // console.log("top of stack:", s.peek());
+  // console.log(s.pop());
+  
+  // function is_palindrome(string) {
+  //   let reverse = "";
+  //   string = string.toLowerCase().replace(/[^a-z]/g, "");
+  //   let splitUp = string.split("");
+
+  //   for (let i = 0; i < splitUp.length; i++) {
+  //     s.push(splitUp[i]);
+  //   }
+  //   for (let j = s.length(); j > 0; j--) {
+  //     reverse += s.pop();
+  //   }
+  //   console.log(reverse);
+  //   if (string === reverse) {
+  //     return true;
+  //   } else {
+  //     return false;
+  //   }
+  // }
+  // console.log(is_palindrome("DaD bOb dAd"));
+  // console.log(is_palindrome("something else"));
+  // console.log(is_palindrome("dad"));
+  // console.log(is_palindrome("A man, a plan, a canal: Panama"));
+  // console.log(is_palindrome("1001"));
+
+  var st = new Stack();
+  function matchingParen(string) { 
+    let open= { '(' : ')', '[' : ']', '{' : '}', '\"' : '\"', '\'' : '\''};
+    let closed= { ')' : true, ']' : true, '}' : true, '\"' : true, '\'' : true};
+    if (string[0] === "\"" || string[0] === "\'") {
+      string = string.replace(/[^"']+(?=(" "|)|"$)/g,"");
+      if (string[0] !== string[1]) {
+        console.log("Error at pos: 1. Expected " + string[0] + " but found " + string[1]);
+        return false;
+      } else {
+        return true;
+      }
+    } else {
+      for (let i = 0; i < string.length; i++) {
+        let char = string[i];
+        if (open[char]) {
+          st.push([i, char]);
+        } else if (closed[char]) {
+          if (open[st.pop()[1]] !== char) {
+            console.log("Error at pos: " + i + ". Expected " + char );
+            return false;
+          }
+        }
+      }
+    }
+    
+    if (st.top === 0) {
+      return true;
+    } else {
+      console.log("Error at pos: " + st.pop()[0]);
+      return false;
+    }
+  }
+  console.log(matchingParen("(((()))"));
+</script>
+</html>
+

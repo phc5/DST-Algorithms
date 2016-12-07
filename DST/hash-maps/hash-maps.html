@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Hash Maps</title>
+</head>
+<body>
+	<h2>This is an implementation of hash maps.</h2>
+	<p>On collisions there are two solutions: seprate chaining and open addressing.</p>
+	<ul>
+		<li>Seprate chaining: each slot holds a linked list so hash the key, find the slot, add the pair to the start of the list.</li>
+		<li>Open addressing: add the pair to the nearest empty slot to where it should live.</li> 
+	</ul>
+</body>
+<script>
+	var HashMap = function(initialCapacity) {
+		this.length = 0; 
+		this._slots = [];
+		this._capacity = initialCapacity || 8;
+		this._deleted = 0;
+	}
+	HashMap.MAX_LOAD_RATIO = 0.9;
+	HashMap.SIZE_RATIO = 3;
+
+	/* _hashString() will take a string and hash it, outputting a number. This 
+	 * function utilizes the djb2 algorithm. 
+	 */
+	HashMap._hashString = function(string) {
+		var hash = 5381;
+		for (var i = 0; i < string.length; i++) {
+			// << left shift bitwise
+			hash = (hash << 5) + hash + string.charCodeAt(i);
+			// AND bitwise
+			hash = hash & hash;
+		}
+		// zero-fill right shift bitwise
+		return hash >>> 0;
+	}
+
+	HashMap.prototype.get = function(key) {
+	    var index = this._findSlot(key);
+	    if (this._slots[index] === undefined) {
+	        throw new Error('Key error');
+	    }
+	    return this._slots[index].value;
+	};
+
+	/* set() checks whether load ratio is > given maximum. If greater, resize hash
+	 * map using the _resize function. Then find appropriate slot using _findSlot()
+	 * and add the object to the array containing the key/value pair.
+	 * best & avg O(1) worst O(n)
+	 */
+	HashMap.prototype.set = function(key, value) {
+	    var loadRatio = (this.length + this._deleted + 1) / this._capacity;
+	    if (loadRatio > HashMap.MAX_LOAD_RATIO) {
+	        this._resize(this._capacity * HashMap.SIZE_RATIO);
+	    }
+
+	    var index = this._findSlot(key);
+	    this._slots[index] = {
+	        key: key,
+	        value: value,
+	        deleted: false
+	    };
+	    this.length++;
+	};
+
+
+	/* _findSlot() calculates hash of the key, modulos has to fit within the
+	 * current capacity, loops through array and finds slot with a matching key
+	 * or empty slot.
+	 * best & avg O(1) worst O(n)
+	 */
+	HashMap.prototype._findSlot = function(key) {
+	    var hash = HashMap._hashString(key);
+	    console.log(hash);
+	    var start = hash % this._capacity;
+	    console.log(start);
+
+	    for (var i=start; i<start + this._capacity; i++) {
+	        var index = i % this._capacity;
+	        var slot = this._slots[index];
+	        if (slot === undefined || (slot.key == key && !slot.deleted)) {
+	            return index;
+	        }
+	    }
+	    // Unreachable
+	};
+
+	/* _resize() recreates has map from scratch with a larger capacity. 
+	 * best & avg O(n) worst O(n^2)
+	 */
+	HashMap.prototype._resize = function(size) {
+	    var oldSlots = this._slots;
+	    this._capacity = size;
+	    // Reset the length - it will get rebuilt as you add the items back
+	    this.length = 0;
+	    this._deleted = 0;
+	    this._slots = [];
+	    for (var i=0; i<oldSlots.length; i++) {
+	        var slot = oldSlots[i];
+	        if (slot !== undefined && !slot.deleted) {
+	            this.set(slot.key, slot.value);
+	        }
+	    }
+	};
+
+	/* remove() finds the correct slot for the key and sets the deleted flag to
+	 * true, decreases the length and increases the deleted count.
+	 */
+	HashMap.prototype.remove = function(key) {
+	    var index = this._findSlot(key);
+	    var slot = this._slots[index];
+	    if (slot === undefined) {
+	        throw new Error('Key error');
+	    }
+	    slot.deleted = true;
+	    this.length--;
+	    this._deleted++;
+	};
+
+	var isPalindrome = function(string) {
+		var characters = {};
+		var palCheck = true;
+		var counter = 0;
+		for (i = 0; i < string.length; i++) {
+			if (characters[string[i]]) {
+				characters[string[i]] += 1;
+			} else {
+				characters[string[i]] = 1;
+			}
+		}
+
+		if (string.length % 2 === 0) {
+			for (var char in characters) {
+				if (characters[char] % 2 !== 0) {
+					palCheck = false;
+				}
+			}
+		} else {
+			for (var char in characters) {
+				if (characters[char] % 2 !== 0) {
+					counter++;
+				}
+			}
+			if (counter > 1) {
+				palCheck = false;
+			}
+		}
+		return palCheck;
+	}
+
+	var isPalindrome2 = function(string) {
+		var characters = {};
+		for (i = 0; i < string.length; i++) {
+			if (characters[string[i]]) {
+				delete characters[string[i]];
+			} else {
+				characters[string[i]] = 1;
+			}
+		}
+		return (Object.keys(characters).length <= 1);
+	}
+
+
+	var anagram = function(array) {
+		var anagrams = {};
+		var sorted = [];
+		var solution = [];
+		// for (i = 0; i < array.length; i++) {
+		// 	sorted[i] = array[i].split("").sort().join("");
+		// 	anagrams[array[i]] = [];
+		// }
+		// for (var keys in anagrams) {
+		// 	for (var j = 0; j < sorted.length; j++) {
+		// 		if (keys.split("").sort().join("") === sorted[j]) {
+		// 			anagrams[keys].push(array[j]);
+		// 		}
+		// 	}
+		// 	for (var i = 1; i < anagrams[keys].length; i++) {
+		// 		word = anagrams[keys][i]
+		// 		delete anagrams[word];
+		// 	}
+		// 	solution.push(anagrams[keys]);
+		// }
+		for (var i = 0; i < array.length; i++) {
+			var word = array[i].split("").sort().join("");
+			if (anagrams[word]) {
+				anagrams[word].push(array[i]);
+			} else {
+				anagrams[word] = [array[i]];
+			}
+		}
+		for (var key in anagrams) {
+			solution.push(anagrams[key]);
+		}
+		return solution;	
+	}
+</script>
+</html>

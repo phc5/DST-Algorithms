@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+
+</body>
+
+<script>
+	// O(1) constant time  
+	function oddOrEven(input) {
+		if (input % 2 === 0) {
+			console.log(input + " is an even number!");
+		} else {
+			console.log(input + " is an odd number!");
+		}
+	}
+	console.log("Exercise 1");
+	oddOrEven(4);
+
+	// O(n) linear time
+	function doubleArray(array) {
+		for (let i = 0; i < array.length; i++) {
+			array[i] = array[i] * 2;
+		}
+		console.log(array);
+	}
+	console.log("Exercise 2");
+	doubleArray([1,2,3,4,5]);
+
+	// O(1) constant time
+	function findRandomly(array) {
+		let index = Math.floor(Math.random() * array.length);
+		console.log(array[index]);
+	}
+	console.log("Exercise 3");
+	findRandomly([1,2,3,4,5]);
+
+	// O(n^2) worst case
+	function createPairs (arr) {
+		let count = 0;
+		let pair = [];
+		while(arr.length >= 0) {
+			let index = Math.floor(Math.random() * arr.length);
+			if (count === 2) {
+				console.log("Pair: ", pair);
+				count = 0;
+				pair = [];
+				if (arr.length == 0) {
+					break;
+				}
+			} else {
+				count++;
+				pair.push(arr[index]);
+				arr.splice(index, 1);
+
+			}
+		}
+	}
+	console.log("Exercise 4");
+	createPairs(["JP", "Dennell", "Benjamin", "Paul", "Donna", "Emily"]);
+
+	// O(n)
+	function isPrime(number) {
+	    if (number < 2 || number % 1 != 0) return false;
+	    for (let i = 2; i < number; ++i) {
+	        if (number % i == 0) return false;
+	    }
+	    return true;
+	}
+	console.log("Exercise 5");
+	isPrime(1);	
+
+	// O(1) best case, O(n^2) worst case
+	function isInSecond(array1, array2) {
+		for (let i = 0;  i < array1.length; i++) {
+			for (let j = 0; j < array2.length; j++) {
+				if (array1[i] === array2[j]) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	console.log("Exercise 6");
+	isInSecond([1,2,3,4,5], [4,2,4,5,1]);
+
+	// O(n)
+	function findMin(array) {
+		let min = array[0];
+		for (let i = 1; i < array.length; i++) {
+			if (array[i] < min) {
+				min = array[i];
+			}
+		}
+		console.log(min);
+
+	}
+	console.log("Exercise 7");
+	findMin([4,5,2,4,1,2]);
+
+	function prime(n) {
+	    let initial = [false, false]
+	    let primes = [];
+
+	    for (var i = 2; i < n; i++) {
+	        initial.push(true);
+	    }
+
+	    for (var i = 2; i <= Math.sqrt(n); i++) {
+	        if (initial[i]) {
+	            for (var j = i * i; j < n; j += i) {
+	                initial[j] = false;
+	            }
+	        }
+	    }
+
+	    for (var i = 2; i < n; i++) {
+	        if(initial[i]) {
+	            primes.push(i);
+	        }
+	    }
+
+	    console.log(primes.length);
+	    return console.log(primes);
+	};
+	console.log("Sieve test");
+	prime(20);
+</script>
+</html>

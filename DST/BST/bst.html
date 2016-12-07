@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Binary Search Trees</title>
+</head>
+<body>
+	<h2>This is an implementation of a BST.</h2>
+</body>
+
+<script>
+	var BinarySearchTree = function(key, value, parent) {
+		this.key = key || null;
+		this.value = value || null;
+		this.parent = parent || null;
+		this.left = null;
+		this.right = null;
+	}
+
+	var Node = function(key, value) {
+		this.key = key || null;
+		this.value = value || null;
+		this.left = null;
+		this.right = null;
+	}
+
+	// best: O(1) avg: O(log(n)) worst: O(n)
+	BinarySearchTree.prototype.insert = function(key, value) {
+		if (this.key == null) {
+			this.key = key;
+			this.value = value;
+		} else if (key < this.key) {
+			if (this.left == null) {
+				this.left = new BinarySearchTree(key, value, this);
+			} else {
+				this.left.insert(key, value);
+			}
+		} else {
+			if (this.right == null) {
+				this.right = new BinarySearchTree(key, value, this);
+			} else {
+				this.right.insert(key, value);
+			}
+		}
+	}
+
+	// best: O(1) avg: O(log(n)) worst: O(n)
+	BinarySearchTree.prototype.get = function(key) {
+		if (this.key == key) {
+			return this.value;
+		} else if (key < this.key && this.left) {
+			return this.left.get(key);
+		} else if (key > this.key && this.right) {
+			return this.right.get(key);
+		} else {
+			throw new Error('Key Error');
+		}
+	}
+
+	// best: O(1) avg: O(log(n)) worst: O(n)
+	BinarySearchTree.prototype.remove = function(key) {
+		if (this.key == key) {
+			if (this.left && this.right) {
+				var successor = this.right._findMin();
+				this.key = successor.key;
+				this.value = successor.value;
+				successor.remove(successor.key);
+			} else if (this.left) {
+				this._replaceWith(this.left);
+			} else if (this.right) {
+				this._replaceWith(this.right);
+			} else {
+				// if node has no children
+				this._replaceWith(null); 
+			}
+		} else if (key < this.key && this.left) {
+			this.left.remove(key);
+		} else if (key > this.key && this.right) {
+			this.right.remove(key);
+		} else {
+			throw new Error('Key Error');
+		}
+	}
+
+	// best: O(1) avg: O(log(n)) worst: O(n)
+	BinarySearchTree.prototype._replaceWith = function(node) {
+		if (this.parent) {
+			if (this == this.parent.left) {
+				this.parent.left = node;
+			} else if (this == this.parent.right) {
+				this.parent.right = node;
+			}
+
+			if (node) {
+				node.parent = this.parent;
+			}
+		} else {
+			if (node) {
+				this.key = node.key;
+				this.value = node.value;
+				this.left = node.left;
+				this.right = node.right;
+			} else {
+				this.key = null;
+				this.value = null;
+				this.left = null;
+				this.right = null;
+			}
+		}
+	}
+
+	// best: O(1) avg: O(log(n)) worst: O(n)
+	BinarySearchTree.prototype._findMin = function() {
+		if (!this.left) {
+			return this;
+		}
+		return this.left._findMin();
+	}
+
+	var treeMax = function(node) {
+		if (!node) {
+			return
+		}
+
+		var maxLeft = treeMax(node.left)
+		var maxRight = treeMax(node.right)
+
+		return Math.max(node.key, maxLeft, maxRight)
+	}
+
+	var treeMin = function(node) {
+		if (!node) {
+			return
+		}
+
+		var minLeft = treeMin(node.left)
+		var minRight = treeMin(node.right)
+
+		return Math.min(node.key, minLeft, minRight)
+	}
+
+	var isBST2 = function(tree) {
+		if (tree === null) {
+			return false
+		}
+
+		if (tree.left !== null && Math.max(tree.left) > tree.key) {
+			return false
+		}
+
+		if (tree.right !== null && Math.min(tree.right) < tree.key) {
+			return false
+		}
+
+		if (!isBST2(tree.left) || !isBST2(tree.right)) {
+			return false
+		}
+
+		return true
+	}
+
+	var isBST = function(tree) {		
+		// left child < parent, right child > parent
+		if (tree) {
+			if (!isBST(tree.left))
+				return false;
+
+			if (tree.left != null && tree.left.key > tree.key)
+				return false;
+
+			if (tree.right != null && tree.right.key < tree.key)
+				return false;
+
+			return isBST(tree.right);
+		}
+		return true;
+	}
+
+	var height = function(tree) {
+		if (tree == null) 
+			return 0;
+		return Math.max(height(tree.left), height(tree.right)) + 1
+	}
+
+	//working implementation
+	var getNth = function(tree, params) {
+		if (tree.right) {
+			getNth(tree.right, params);
+		}
+		if (++params.index == params.n) {
+			params.third = tree.key;
+			return;
+		}
+		if (tree.left){
+			getNth(tree.left, params);
+		}	
+	}
+
+	var getThird = function(tree) {
+		if (tree == null) {
+			return null;
+		}
+		var params = {
+			index: 0,
+			n: 3,
+			third: null
+		}
+		getNth(tree, params);
+		return params.third;
+	}
+
+	// //doesn't work
+	// var counter = 0
+	// var thirdLargest = function(tree) {
+	// 	if (tree.right) {
+	// 		thirdLargest(tree.right)
+	// 		counter++
+	// 	}
+	// 	if (counter === 3) {
+	// 		return tree
+	// 	}
+	// 	if (tree.left) {
+	// 		thirdLargest(tree.left)
+	// 	}
+
+	// }
+
+	// //doesn't work
+	// var largest2 = function(tree, count, result) {
+	// 	if (tree.right) {
+	// 		largest2(tree.right, count, result);
+	// 		console.log(result);
+	// 		if (result !== null) {
+	// 			console.log("ine");
+	// 			return;
+	// 		}
+	// 	}
+	// 	console.log(count);
+	// 	if (!--count) {
+	// 		result = tree.key
+	// 		return;
+	// 	}
+	// 	if (tree.left) {
+	// 		largest2(tree.left, count, result);
+	// 	}
+	// }
+	// //doesn't work
+	// var third2 = function(tree) {
+	// 	if (tree.key == null) {
+	// 		return null;
+	// 	}
+	// 	var count = 3;
+	// 	var result = null;
+	// 	return largest2(tree, count, result); 
+	// }
+
+	
+
+	var createTree = function() {
+		var a = new BinarySearchTree(4,4);
+		a.insert(9,9);
+		a.insert(5,5);
+		a.insert(20,20);
+		a.insert(15,15);
+		a.insert(14,14);
+		a.insert(17,17);
+		a.insert(18,18);
+		a.insert(19,19);
+		a.insert(21,21);
+		return a;
+	}
+</script>
+</html>

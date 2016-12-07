@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Hash Maps</title>
+</head>
+<body>
+	<h2>This is an implementation of hash maps using separate chaining</h2>
+	<p>On collisions there are two solutions: seprate chaining and open addressing.</p>
+	<ul>
+		<li>Seprate chaining: each slot holds a linked list so hash the key, find the slot, add the pair to the start of the list.</li>
+		<li>Open addressing: add the pair to the nearest empty slot to where it should live.</li> 
+	</ul>
+</body>
+<script>
+	var HashMap = function(initialCapacity) {
+		this.length = 0; 
+		this._slots = [];
+		this._capacity = initialCapacity || 8;
+	}
+	HashMap.MAX_LOAD_RATIO = 0.9;
+	HashMap.SIZE_RATIO = 3;
+
+	/* _hashString() will take a string and hash it, outputting a number. This 
+	 * function utilizes the djb2 algorithm. 
+	 */
+	HashMap._hashString = function(string) {
+		var hash = 5381;
+		for (var i = 0; i < string.length; i++) {
+			// << left shift bitwise
+			hash = (hash << 5) + hash + string.charCodeAt(i);
+			// AND bitwise
+			hash = hash & hash;
+		}
+		// zero-fill right shift bitwise
+		return hash >>> 0;
+	}
+
+	HashMap.prototype.get = function(key) {
+	    var slot = this._findSlot(key);
+	    if (slot === undefined) {
+	        throw new Error('Key error');
+	    }
+	    return slot.value;
+	};
+
+	/* set() checks whether load ratio is > given maximum. If greater, resize hash
+	 * map using the _resize function. Then find appropriate slot using _findSlot()
+	 * and add the object to the array containing the key/value pair.
+	 * best & avg O(1) worst O(n)
+	 */
+	HashMap.prototype.set = function(key, value) {
+	    var loadRatio = (this.length + this._deleted + 1) / this._capacity;
+	    if (loadRatio > HashMap.MAX_LOAD_RATIO) {
+	        this._resize(this._capacity * HashMap.SIZE_RATIO);
+	    }
+
+	    var slot = this._findSlot(key);
+	    slot.value = value;
+	};
+
+
+	/* _findSlot() calculates hash of the key, modulos has to fit within the
+	 * current capacity, loops through array and finds slot with a matching key
+	 * or empty slot.
+	 * best & avg O(1) worst O(n)
+	 */
+	HashMap.prototype._findSlot = function(key) {
+	    var hash = HashMap._hashString(key);
+	    var index = hash % this._capacity;
+	    var slot = this._slots[index];
+
+	    if (!slot) {
+	    	return this._slots[index] = {key: key, next: null};
+	    }
+	    while (slot.next) {
+	    	if (slot.key == key) {
+	    		return slot;
+	    	}
+	    	if (slot.next === null || !slot.next) {
+	    		return slot;
+	    	} else {
+	    		slot = slot.next
+	    	}
+	    }
+	    return slot.next = {key: key, next: null};
+	};
+
+	/* _resize() recreates has map from scratch with a larger capacity. 
+	 * best & avg O(n) worst O(n^2)
+	 */
+	HashMap.prototype._resize = function(size) {
+	    var oldSlots = this._slots;
+	    this._capacity = size;
+	    // Reset the length - it will get rebuilt as you add the items back
+	    this.length = 0;
+	    this._deleted = 0;
+	    this._slots = [];
+	    for (var i=0; i<oldSlots.length; i++) {
+	        var slot = oldSlots[i];
+	        if (slot !== undefined) {
+	            this.set(slot.key, slot.value);
+	        }
+	    }
+	};
+
+	/* remove() finds the correct slot for the key and decreases the length
+	 */
+	HashMap.prototype.remove = function(key) {
+	    if (this._findSlot(key)) {
+	    	var hash = HashMap._hashString(key);
+	    	var index = hash % this._capacity;
+	    	
+	    	this._slots.splice(index);
+	    }
+	};
+
+	var create = function() {
+		var a = new HashMap();
+		a.set(1,1);
+		a.set('pzpz', 1);
+		a.set('paul', 2);
+		return a;
+	}
+</script>
+</html>

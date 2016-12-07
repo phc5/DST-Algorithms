@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Linked Lists</title>
+</head>
+<body>
+	<h1>This is a Linked List implementation.</h1>
+</body>
+<script>
+	let LinkedList = function() {
+		this.length = 0;
+		this.head = null;
+	}
+
+	//best case O(1), avg & worst case O(n)
+	LinkedList.prototype.insert = function(index, value) {
+		if (index < 0 || index > this.length) {
+			throw new Error('Index error');
+		}
+
+		let newNode = {
+			value: value
+		};
+
+		if (index == 0) {
+			newNode.next = this.head; //next is null
+			this.head = newNode; // head is newNode
+		} else {
+			let node = this._find(index - 1);
+			newNode.next = node.next; //node.next was null but now newNode.next is null
+			node.next = newNode; //node.next points to newNode now
+		}
+		this.length++;
+	}
+
+	// avg & worst O(n)
+	LinkedList.prototype._find = function(index) {
+		let node = this.head;
+		for (let i = 0; i < index; i++) {
+			node = node.next;
+		}
+		return node;
+	} 
+
+	// avg & worst O(n)
+	LinkedList.prototype.get = function(index) {
+		if (index < 0 || index >= this.length) {
+			throw new Error('Index error');
+		}
+		return this._find(index).value;
+	}
+
+	// best O(1), avg & worst O(n)
+	LinkedList.prototype.remove = function(index) {
+		if (index < 0 || index >= this.length) {
+			throw new Error('Index error');
+		}
+
+		if (index == 0) {
+			this.head = this.head.next;
+		} else {
+			let node = this._find(index - 1);
+			node.next = node.next.next;
+		}
+		this.length--;
+	}
+
+	let list = new LinkedList();
+	for (let i = 0; i < 5; i++) {
+		list.insert(i, i);
+	}
+	console.log(list);
+
+	//middle(list) finds the middle element of a linked list w/o using .length
+	function middle(list) {
+		let tortoise = list.head;
+		let hare = list.head;
+
+		while(hare !== null && hare.next !== null) {
+			hare = hare.next.next;
+			tortoise = tortoise.next;
+		}
+		return tortoise;
+	}
+	
+	//findThirdToLast(list) find 3rd to last element in a linked list w/o using .length
+	function findThirdToLast(list) {
+		let tortoise = list.head;
+		let hare = list.head.next.next;
+
+		while(hare !== null && hare.next !== null) {
+			hare = hare.next;
+			tortoise = tortoise.next;
+		}
+		return tortoise;
+	}
+
+	//reverse(list) reverses the linked list
+	function reverse(list) {
+		// let temp = [];
+		// let current = list.head;
+		
+		// while (current) {
+		// 	temp.push(current);
+		// 	current = current.next;
+		// }
+
+		// let reversed = new LinkedList();
+		// reversed.head = temp.pop();
+		// reversed.length++;
+		// current = reversed.head;
+
+		// let node = temp.pop();
+		// while (node) {
+		// 	reversed.length++;
+		// 	node.next = null; //set new next to null
+		// 	current.next = node; //set current next to new node
+		// 	current = current.next; //set current to new ndoe
+		// 	node = temp.pop();
+		// }
+		// return reversed;
+
+		current = list.head;
+		next = null;
+		previous = null;
+		
+		while (current !== null) {
+			next = current.next; //set next to current.next
+			current.next = previous; //set current.next to the previous node
+			previous = current; //set previous to the current node
+			current = next; //set current node to the next node
+		}
+		list.head = previous;
+		return list;
+	}
+
+	let loopList = new LinkedList();
+	loopList.insert(0, 0);
+	loopList.insert(1, 1);
+	loopList.insert(2, 2);
+	loopList.insert(3, 3);
+	loopList.insert(4, 4);
+	loopList.insert(5, 5);
+	loopList.insert(6, 6);
+	loopList.insert(7, 7);
+	loopList.insert(8, 8);
+	loopList.insert(9, 9);
+	loopList.insert(10, 10);
+	loopList.insert(11, 11);
+	loopList._find(11).next = loopList._find(4);
+
+	//hasLoop(list) will determine if a linked list has a loop or not
+	function hasLoop(list) {
+		let tortoise = list.head;
+		let hare = list.head;
+		let flag = false;
+		while(hare !== null && hare.next !== null) {
+			hare = hare.next.next;
+			tortoise = tortoise.next;
+			if (hare === tortoise) {
+				flag = true;
+				break;
+			}
+		}
+		return flag;
+	}
+
+	//loopLength(list) will determine the length of the loop
+	function loopLength(list) {
+		let tortoise = list.head;
+		let hare = list.head;
+		let counter = 0;
+		while(hare !== null && hare.next !== null) {
+			hare = hare.next.next;
+			tortoise = tortoise.next;
+			if (hare === tortoise) {
+				while(true) {
+					hare = hare.next.next;
+					tortoise = tortoise.next;
+					counter++;
+					if (hare === tortoise) {
+						break;
+					}
+				}
+				break;
+			}
+		}
+		return counter;
+	}
+</script>
+</html>

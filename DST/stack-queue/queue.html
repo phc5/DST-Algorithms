@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Queue</title>
+</head>
+<body>
+	<h1>This is an implementation of a queue.</h1>
+</body>
+<script>
+	function Queue() { 
+	    this.dataStore = []; 
+	    this.enqueue = enqueue; 
+	    this.dequeue = dequeue; 
+	    this.front = front; 
+	    this.back = back; 
+	    this.toString = toString; 
+	    this.length = length;
+	} 
+	//The enqueue() function adds an element to the end of a queue: O(1)
+	function enqueue(element) { 
+	    this.dataStore.push(element); 
+	} 
+	//The dequeue() function removes an element from the front of a queue: O(1)
+	function dequeue() { 
+	    return this.dataStore.shift();
+	}
+
+	// O(1)
+	function front() {
+		return this.dataStore[0];
+	}
+
+	// O(1)
+	function back() {
+		return this.dataStore[this.dataStore.length - 1];
+	}
+
+	// O(n)
+	function toString() {
+		return "front [" + this.dataStore + "] back";
+	}
+
+	function length() {
+		return this.dataStore.length;
+	}
+
+	// function pair(line) {
+	// 	let men = [];
+	// 	let women = [];
+	// 	for (var i = line.length(); i > 0; i--) {
+	// 		if (line.dequeue() === 'M') {
+	// 			if (women.length !== 0) {
+	// 				console.log("Found a woman for M " + i);
+	// 				women.pop();
+	// 			} else {
+	// 				men.push('M');
+	// 			}
+	// 		} else {
+	// 			if (men.length !== 0) {
+	// 				console.log("Found a man for W " + i);
+	// 				men.pop();
+	// 			} else {
+	// 				women.push('W');
+	// 			}
+	// 		}
+	// 	}
+	// 	console.log("Remaining number of men: " + men.length);
+	// 	console.log("Remaining number of women: " + women.length);
+	// }
+	// let line = new Queue();
+	// line.enqueue('M');
+	// line.enqueue('M');
+	// line.enqueue('W');
+	// line.enqueue('M');
+	// line.enqueue('W');
+	// line.enqueue('W');
+	// line.enqueue('M');
+	// line.enqueue('W');
+	// line.enqueue('W');
+	// pair(line);
+
+	// teller will serve customers with correct paperwork. 25% of time
+	// customer will have wrong paper work and gets sent to the end of the
+	// queue. Implement this. 
+	function teller(line) {
+		while(line.length() !== 0) {
+			let chance = Math.random();
+			if (chance < 0.75) {
+				console.log("Customer " + line.front() + " has been served!");
+				line.dequeue();
+			} else {
+				console.log("Customer " + line.front() + " has wrong paperwork!");
+				line.enqueue(line.dequeue());
+			}
+		}
+		console.log("All customers have been served!");
+	}
+	let bankLine = new Queue();
+	for (let i = 0; i < 100; i++) {
+		bankLine.enqueue(i);
+	}
+	teller(bankLine);
+</script>
+</html>
