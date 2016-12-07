@@ -134,7 +134,37 @@
 		} else if (mid > value) {
 			return exercise2(array, value, start, index - 1);
 		}
+	}
+
+	var populate = function(start, end) {
+		var array = [];
+		for (i = start; i < end; i++) {
+			array.push(i);
+		}
+		return array;
 	}	
+
+	var exercise3 = function(index) {
+		var library = {
+			'General': populate(0,100),
+			'Philosophy': populate(100,200),
+			'Religion': populate(200, 300),
+			'Social': populate(300,400),
+			'Language': populate(400,500),
+			'Science': populate(500,600),
+			'Technology': populate(600,700),
+			'Arts': populate(700,800),
+			'Literature': populate(800,900),
+			'History': populate(900,1000)
+		}
+		for (subject in library) {
+			if (library[subject].indexOf(index) !== -1) {
+				var location = subject + " " + library[subject].indexOf(index);
+				return location;
+			}
+		}
+		return -1;
+	}
 
 	var BinaryTree = function(value, parent) {
 		this.value = value || null;
