@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Sorting</title>
+</head>
+<body>
+	<p>This is contains bubble sort, merge sort, and quick sort.</p>
+	<ul>
+		<li>bubble: best O(n) avg & worst O(n^2)</li>
+		<li>merge: best & avg & worst O(nlog(n))</li>
+		<li>quick: best & avg O(nlog(n)) worst O(n^2)</li>
+	</ul>
+</body>
+<script>
+	var swap = function(array, i , j) {
+		var tmp = array[i];
+		array[i] = array[j];
+		array[j] = temp;
+	};
+
+	// look at adjacent pairs, if wrong order then swap and increase swap counter.
+	// if number of swaps > 0, recursively call bubblesort otherwise return array.
+	var bubbleSort = function(array) {
+		var swaps = 0;
+		for (var i = 0; i < array.length - 1; i++) {
+			if (array[i] > array[i + 1]) {
+				swap(array, i, i + 1);
+				swaps++;
+			}
+		}
+
+		if (swaps > 0) {
+			return bubbleSort(array);
+		}
+		return array;
+	};
+
+	// split the list into two halves and merge them into one.
+	var mergeSort = function(array) {
+		if (array.length <= 1) {
+			return array;
+		}
+
+		var middle = Math.floor(array.length / 2);
+		var left = array.slice(0, middle);
+		var right = array.slice(middle, array.length);
+
+		left = mergeSort(left);
+		right = mergeSort(right);
+		return merge(left, right, array);
+	};
+
+	var merge = function(left, right, array) {
+	    var leftIndex = 0;
+	    var rightIndex = 0;
+	    var outputIndex = 0;
+	    while (leftIndex < left.length && rightIndex < right.length) {
+	        if (left[leftIndex] < right[rightIndex]) {
+	            array[outputIndex++] = left[leftIndex++];
+	        }
+	        else {
+	            array[outputIndex++] = right[rightIndex++];
+	        }
+	    }
+
+	    for (var i=leftIndex; i<left.length; i++) {
+	        array[outputIndex++] = left[i];
+	    }
+
+	    for (var i=rightIndex; i<right.length; i++) {
+	        array[outputIndex++] = right[i];
+	    }
+	    return array;
+	};
+
+	var quickSort = 
+</script>
+</html>

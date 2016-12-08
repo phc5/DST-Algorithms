@@ -158,8 +158,9 @@
 			'History': populate(900,1000)
 		}
 		for (subject in library) {
-			if (library[subject].indexOf(index) !== -1) {
-				var location = subject + " " + library[subject].indexOf(index);
+			var book = library[subject].indexOf(index)
+			if ( book !== -1) {
+				var location = subject + " " + book;
 				return location;
 			}
 		}
