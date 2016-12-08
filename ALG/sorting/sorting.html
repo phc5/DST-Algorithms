@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Sorting</title>
+</head>
+<body>
+	<p>Sorting algorithms</p>
+</body>
+<script>
+	var swap = function(array, i, j) {
+		var temp = array[i];
+		array[i] = array[j];
+		array[j] = temp;
+	}
+
+	var bubbleSort = function(array) {
+		var swaps = 0;
+		for (var i = 0; i < array.length - 1; i++) {
+			if (array[i] > array[i + 1]) {
+				swap(array, i, i + 1);
+				swaps++;
+			}
+		}
+		if (swaps > 0) {
+			return bubbleSort(array);
+		}
+		return array;
+	}
+
+	var merge = function(left, right, array) {
+		var leftIndex = 0;
+		var rightIndex = 0;
+		var outputIndex = 0;
+
+		while(leftIndex < left.length && rightIndex < right.length) {
+			if (left[leftIndex] < right[rightIndex]) {
+				array[outputIndex++] = left[leftIndex++];
+			} else {
+				array[outputIndex++] = right[rightIndex++];
+			}
+		}
+		for (var i = leftIndex; i < left.length; i++) {
+			array[outputIndex++] = left[i];
+		}
+		for (var i = rightIndex; i < right.length; i++) {
+			array[outputIndex++] = right[i];
+		}
+
+		return array;
+	}
+
+	var mergeSort = function(array) {
+		if (array.length <= 1) {
+			return array;
+		}
+
+		var middle = Math.floor(array.length / 2);
+		var left = array.slice(0, middle);
+		var right = array.slice(middle, array.length);
+
+		left = mergeSort(left);
+		right = mergeSort(right);
+		return merge(left, right, array);
+	}
+
+	var partition = function(array, start, end) {
+		var pivot = array[end - 1];
+		var j = start; 
+		for (var i = start; i < end - 1; i++) {
+			if (array[i] <= pivot) {
+				swap(array, i, j);
+				j++;
+			}
+		}
+		swap(array, end - 1, j);
+		return j;
+	}
+
+	var quickSort = function(array, start, end) {
+		start = start === undefined ? 0 : start;
+		end = end === undefined ? array.length : end;
+		if (start >= end) {
+			return array;
+		}
+
+		var middle = partition(array, start, end);
+		array = quickSort(array, start, middle);
+		array = quickSort(array, middle + 1, end);
+		return array;
+	}
+
+	// interview question 1
+	// var countingSort = function(array, min, max) {
+	// 	var indexArray = [];
+	// 	var j = 0;
+	// 	for (var i = min; i <= max; i++) {
+	// 		indexArray[i] = 0;
+	// 	}
+	// 	for (var i = 0; i < array.length; i++) {
+	// 		indexArray[array[i]]++;
+	// 	}
+	// 	// for (var i = min; i <= max; i++) {
+	// 	// 	while(indexArray[i]-- > 0) {
+	// 	// 		array[j++] = i;
+	// 	// 	}
+	// 	// }
+	// 	for (var i = min + 1; i < indexArray.length; i++) {
+	// 		indexArray[i] += indexArray[i - 1];
+	// 	}
+	// 	console.log(indexArray);
+	// 	return array;
+	// } 
+	var bucketSort = function(array, min, max) {
+		var endArray = [];
+		var buckets = Array(max - min + 1);
+		for (var i = 0; i < array.length; i++) {
+			buckets[array[i] - min] = (buckets[array[i] - min] || 0) + 1;
+		}
+		for (var i = min; i <= max; i++) {
+			for (var j = 0; j < buckets[i - min]; j++) {
+				endArray.push(i);
+			}
+		}
+		return endArray;
+	}
+
+	var shuffle = function(array) {
+		for (var i = 0; i < array.length; i++) {
+			var randomIndex = Math.floor(Math.random() * array.length);
+			var temp = array[i];
+			array[i] = array[randomIndex];
+			array[randomIndex] = temp;
+		}
+		return array;
+	}
+
+	var sortBooks = function(array) {
+		var shelf = [];
+		for (var i = 0; i < array.length; i++) {
+			var j;
+			for (j = 0; j < shelf.length && array[i] >= shelf[j]; j++) {};
+			shelf.splice(j, 0, array[i]);
+		}
+		return shelf;
+	}
+</script>
+</html>
