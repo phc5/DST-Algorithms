@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>DSA Questions</title>
+</head>
+<body>
+
+</body>
+<script>
+	var setToZero = function(array) {
+		var zeroRows = [];
+		var zeroCol = [];
+		for (var i = 0; i < array.length; i++) {
+			for (var j = 0; j < array[i].length; j++) {
+				if (array[i][j] === 0) {
+					zeroRows[i] = 0;
+					zeroCol[j] = 0;
+				}
+			}
+		}
+
+		for (var i = 0; i < array.length; i++) {
+			for (var j = 0; j < array[i].length; j++) {
+				if (zeroRows[i] == 0 || zeroCol[j] == 0) {
+					array[i][j] = 0;
+				}
+			}
+		}
+		return array;
+	}
+
+	var createArray = function() {
+		var twoDArray = [[1,1,1],[1,0,0],[1,1,1]]
+		
+		return setToZero(twoDArray);
+	}
+
+	var greatestSum = function(array) {
+		var sum = 0;
+		var greatest = 0;
+
+		for (var i = 0; i < array.length; i++) {
+			sum += array[i];
+			if (sum > greatest) {
+				greatest = sum;
+			}
+		}
+		return greatest;
+	}
+
+	var addNumbers = function(list1, list2) {
+
+	}
+
+	var sumPairs = function(array, value) {
+		var pairs = [];
+		for (var i = 0; i < array.length; i++) {
+			for (var j = i + 1; j < array.length; j++) {
+				if (array[i] + array[j] == value) {
+					pairs.push([array[i], array[j]]);
+				}
+			}
+		}
+		return pairs;
+	}
+
+	var checkBalanced = function(tree) {
+		// count nodes for each leaf? but what if many leaves.. thats alot to count..
+		// go all the way right and left ?
+		if (!tree.left) {
+			return !(tree.right && (tree.right.left || tree.right.right));
+		} 
+		if (!tree.right) {
+			return !(tree.left && (tree.left.left || tree.left.right));
+		}
+		return checkBalanced(tree.left) && checkBalanced(tree.right);
+	}
+
+	var BinarySearchTree = function(key, value, parent) {
+		this.key = key || null;
+		this.value = value || null;
+		this.parent = parent || null;
+		this.left = false;
+		this.right = false;
+	}
+
+	BinarySearchTree.prototype.insert = function(key, value) {
+		if (this.key == null) {
+			this.key = key;
+			this.value = value;
+		} else if (key < this.key) {
+			if (this.left == false) {
+				this.left = new BinarySearchTree(key, value, this);
+			} else {
+				this.left.insert(key, value);
+			}
+		} else {
+			if (this.right == false) {
+				this.right = new BinarySearchTree(key, value, this);
+			} else {
+				this.right.insert(key, value);
+			}
+		}
+	}
+
+	var createTree = function() {
+		var a = new BinarySearchTree(4,4);
+		a.insert(2,2);
+		a.insert(1,1);
+		a.insert(3,3);
+		a.insert(6,6);
+		a.insert(5,5);
+		a.insert(7,7);
+		a.insert(8,8);
+		a.insert(9,9);
+		return a;
+	}
+
+	var isRotated = function(string1, string2) {
+		 var check = "";
+		 var index = string2.indexOf(string1[0]);
+		 for (i = index; i < string2.length; i++) {
+		 	check += string2[i];
+		 }
+		 for (i = 0; i < index; i++) {
+		 	check += string2[i];
+		 }
+		 if (check === string1) {
+		 	return true;
+		 } else{
+			return false
+		 }
+	}
+</script>
+</html>

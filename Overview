@@ -1,0 +1,30 @@
+Trees
+	Start with a root node.
+	Root node may have children nodes. Each child node has one parent.
+
+	Binary Trees are trees where nodes may have 2 children max. Subtrees are valid trees.
+
+	Binary Search Trees are tress where left child is less than parent and right child is greater than parent.
+
+Searching
+	Linear Search
+		Start at the first element and iterate through each element on the list until you find the element or reach the end of the list.
+
+		Best O(1), avg & worst O(n)
+	Binary Search
+		Start with a sorted list. Use recursion to implement the search by cutting the list in half.
+
+		Best O(1), avg & worst O(log(n))
+
+	Depth-First Search (descendants first)
+		Pre-Order
+			Root/Node -> Left -> Right
+
+		In-Order
+			Left -> Root/Node -> Right
+
+		Post-Order
+			Left -> Right -> Rote/Node
+
+	Breadth-First Search (siblings first) 
+		Travel through the tree level-by-level (left-to-right)
