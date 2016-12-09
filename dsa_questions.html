@@ -48,8 +48,77 @@
 		return greatest;
 	}
 
-	var addNumbers = function(list1, list2) {
+	let LinkedList = function() {
+		this.length = 0;
+		this.head = null;
+	}
 
+	//best case O(1), avg & worst case O(n)
+	LinkedList.prototype.insert = function(index, value) {
+		if (index < 0 || index > this.length) {
+			throw new Error('Index error');
+		}
+
+		let newNode = {
+			value: value
+		};
+
+		if (index == 0) {
+			newNode.next = this.head; //next is null
+			this.head = newNode; // head is newNode
+		} else {
+			let node = this._find(index - 1);
+			newNode.next = node.next; //node.next was null but now newNode.next is null
+			node.next = newNode; //node.next points to newNode now
+		}
+		this.length++;
+	}
+	// avg & worst O(n)
+	LinkedList.prototype._find = function(index) {
+		let node = this.head;
+		for (let i = 0; i < index; i++) {
+			node = node.next;
+		}
+		return node;
+	} 
+
+	var addNumbers = function(list1, list2) {
+		var newList = new LinkedList();
+		var carry = 0;
+		var last = 0;
+		var sumHeadNext = list1.head.next.value + list2.head.next.value;
+		var sumHead = list1.head.value + list2.head.value;
+
+		if (sumHeadNext > 9) {
+			var num = sumHeadNext.toString();
+			carry = parseInt(num[0]);
+			last = parseInt(num[1]);
+		} else {
+			last = sumHeadNext;
+		}
+		if (sumHead > 9 || sumHead + carry > 9) {
+			sumHead += carry;
+			var num = sumHead.toString();
+			carry = parseInt(num[0]);
+			newList.insert(0, carry);
+			newList.insert(1, parseInt(num[1]));
+			newList.insert(2, last);
+		} else {
+			newList.insert(0, sumHead + carry);
+			newList.insert(1, last);
+		}
+		console.log(newList);
+		return newList;
+	}
+
+	var createLinkedList = function() {
+		var j = new LinkedList();
+		j.insert(0, 1);
+		j.insert(1, 2);
+		var k = new LinkedList();
+		k.insert(0, 9);
+		k.insert(1, 9);
+		return addNumbers(j, k);
 	}
 
 	var sumPairs = function(array, value) {
@@ -116,20 +185,23 @@
 		return a;
 	}
 
+	// string1 = stackoverflow string2 = overflowstack
 	var isRotated = function(string1, string2) {
-		 var check = "";
-		 var index = string2.indexOf(string1[0]);
-		 for (i = index; i < string2.length; i++) {
-		 	check += string2[i];
-		 }
-		 for (i = 0; i < index; i++) {
-		 	check += string2[i];
-		 }
-		 if (check === string1) {
-		 	return true;
-		 } else{
-			return false
-		 }
+		 // var check = "";
+		 // var index = string2.indexOf(string1[0]);
+		 // for (i = index; i < string2.length; i++) {
+		 // 	check += string2[i];
+		 // }
+		 // for (i = 0; i < index; i++) {
+		 // 	check += string2[i];
+		 // }
+		 // if (check === string1) {
+		 // 	return true;
+		 // } else{
+			// return false
+		 // }
+		 var concatenated = string2 + string2;
+		 return concatenated.indexOf(string1) !== -1;
 	}
 </script>
 </html>
